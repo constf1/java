@@ -1,2 +1,2 @@
 # java
-for small java projects
+small java projects
