@@ -8,9 +8,9 @@ public class FreecellBasis {
     CELL_START, CELL_NUM, CELL_END;
 
   FreecellBasis(
-      final int PILE_NUM, // cascades
-      final int CELL_NUM, // open cells
-      final int BASE_NUM // foundation piles
+    final int PILE_NUM, // cascades
+    final int CELL_NUM, // open cells
+    final int BASE_NUM // foundation piles
   ) {
     this.PILE_NUM = PILE_NUM;
     this.CELL_NUM = CELL_NUM;
@@ -46,5 +46,19 @@ public class FreecellBasis {
       return "cell " + (index - this.CELL_START);
     }
     return "unknown " + index;
+  }
+
+  public static void main(String[] args) {
+    FreecellBasis basis = new FreecellBasis(8, 4, 4);
+
+    System.out.println("Basis Test");
+    System.out.println("DESK_SIZE: " + basis.DESK_SIZE);
+    System.out.println("BASE_NUM: " + basis.BASE_NUM);
+    System.out.println("CELL_NUM: " + basis.CELL_NUM);
+    System.out.println("PILE_NUM: " + basis.PILE_NUM);
+
+    for (int i = 0; i < basis.DESK_SIZE; i++) {
+      System.out.println("SPOT #" + i + "\n\t" + basis.getSpotName(i));
+    }
   }
 }
