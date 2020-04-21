@@ -123,7 +123,7 @@ public class Deck {
   }
 
   // A set of optionally shuffled playing cards.
-  int[] deck(int seed) {
+  public static int[] deck(int seed) {
     int cards[] = new int[CARD_NUM];
     for (int i = 0; i < CARD_NUM; i++) {
       cards[i] = i;
@@ -157,6 +157,15 @@ public class Deck {
       rankOf(cardA) == rankOf(cardB) + 1 &&
       suitOf(cardA) % 2 != suitOf(cardB) % 2
     );
+  }
+
+  public static void main(String[] args) {
+    System.out.println("Deck Test");
+
+    final int cards[] = deck(-1);
+    for (int card : cards) {
+      System.out.println("\t" + card + "\t" + nameOf(card) + "\t" + fullNameOf(card));
+    }
   }
 
 }
