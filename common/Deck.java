@@ -82,6 +82,11 @@ public class Deck {
     return "" + RANKS.charAt(rankOf(index)) + SUITS.charAt(suitOf(index));
   }
 
+  public static void appendNameOf(StringBuilder buf, int index) {
+    buf.append(RANKS.charAt(rankOf(index)));
+    buf.append(SUITS.charAt(suitOf(index)));
+  }
+
   public static String playNameOf(int index) {
     return RANK_PLAY_NAMES[rankOf(index)] + SUIT_PLAY_NAMES[suitOf(index)];
   }
@@ -123,24 +128,26 @@ public class Deck {
   }
 
   // A set of optionally shuffled playing cards.
-  public static int[] deck(int seed) {
+  public static int[] deck(long seed) {
     int cards[] = new int[CARD_NUM];
     for (int i = 0; i < CARD_NUM; i++) {
       cards[i] = i;
     }
 
     if (seed >= 0) {
+      // System.out.println("SEED: " + seed);
       // use LCG algorithm to pick up cards from the deck
       // http://en.wikipedia.org/wiki/Linear_congruential_generator
-      final int m = 0x80000000;
-      final int a = 1103515245;
-      final int c = 12345;
+      final double m = 0x80000000L;
+      final double a = 1103515245L;
+      final double c = 12345L;
 
       for (int i = 0; i < CARD_NUM; i++) {
-        seed = (a * seed + c) % m;
+        seed = (long) ((a * seed + c) % m);
 
         // swap cards
-        final int j = seed % CARD_NUM;
+        final int j = (int)(seed % CARD_NUM);
+        // System.out.println("" + i + " " + j + " " + seed);
         if (i != j) {
           final int card = cards[i];
           cards[i] = cards[j];
@@ -162,7 +169,7 @@ public class Deck {
   public static void main(String[] args) {
     System.out.println("Deck Test");
 
-    final int cards[] = deck(-1);
+    final int cards[] = deck(1);
     for (int card : cards) {
       System.out.println("\t" + card + "\t" + nameOf(card) + "\t" + fullNameOf(card));
     }

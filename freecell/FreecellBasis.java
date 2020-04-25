@@ -24,26 +24,38 @@ public class FreecellBasis {
   }
 
   boolean isPile(final int index) {
-    return index >= this.PILE_START && index < this.PILE_END;
+    return index >= PILE_START && index < PILE_END;
   }
 
   boolean isBase(final int index) {
-    return index >= this.BASE_START && index < this.BASE_END;
+    return index >= BASE_START && index < BASE_END;
   }
 
   boolean isCell(final int index) {
-    return index >= this.CELL_START && index < this.CELL_END;
+    return index >= CELL_START && index < CELL_END;
+  }
+
+  int toMove(final int giver, final int taker) {
+    return giver + taker * DESK_SIZE;
+  }
+
+  int toGiver(final int move) {
+    return move % DESK_SIZE;
+  }
+
+  int toTaker(final int move) {
+    return move / DESK_SIZE;
   }
 
   String getSpotName(final int index) {
-    if (this.isBase(index)) {
-      return "base " + (index - this.BASE_START);
+    if (isBase(index)) {
+      return "base " + (index - BASE_START);
     }
-    if (this.isPile(index)) {
-      return "pile " + (index - this.PILE_START);
+    if (isPile(index)) {
+      return "pile " + (index - PILE_START);
     }
-    if (this.isCell(index)) {
-      return "cell " + (index - this.CELL_START);
+    if (isCell(index)) {
+      return "cell " + (index - CELL_START);
     }
     return "unknown " + index;
   }
