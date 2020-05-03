@@ -16,10 +16,22 @@ import common.IntStack;
 public class FreecellSolver extends FreecellGame {
   public static final int
     TOTAL_MAX = 5000000,
-    INPUT_MAX = 9000;
+    INPUT_MIN = 1000,
+    INPUT_MAX = 100000;
+
+  public boolean debug = false;
   
   public FreecellSolver() {
     super(8, 4, 4);
+    setInputSize(8888);
+  }
+
+  public void setInputSize(int value) {
+    _inputSize = Math.min(Math.max(value, INPUT_MIN), INPUT_MAX);
+  }
+
+  public int getInputSize() {
+    return _inputSize;
   }
 
   protected List<int[]> _feed = new ArrayList<>();
@@ -28,6 +40,7 @@ public class FreecellSolver extends FreecellGame {
   protected int[] _solution = null;
   protected int _iteration = 0;
   protected IntStack _nextMoves = new IntStack();
+  protected int _inputSize = INPUT_MIN;
 
   protected Comparator<int[]> _comparator = new Comparator<>() {
     @Override
@@ -37,7 +50,7 @@ public class FreecellSolver extends FreecellGame {
       }
       for (int i = 0; i < a.length; i++) {
         if (a[i] != b[i]) {
-          // Actually we can try to analize which move is better.
+          // Actually we could also analyze which move is better.
           return a[i] - b[i];
         }
       }
@@ -68,9 +81,9 @@ public class FreecellSolver extends FreecellGame {
     _feed.add(_path.toArray​());
   }
 
-  protected void _splitOutput(final int outputMax) {
+  protected void _splitOutput() {
     final int feedSize = _feed.size();
-    if (feedSize > outputMax) {
+    if (feedSize > _inputSize) {
       for (final int[] path : _feed) {
         rewind();
         forward(path);
@@ -123,7 +136,7 @@ public class FreecellSolver extends FreecellGame {
 
     final int oldSize = _pool.size();
 
-    _splitOutput(INPUT_MAX);
+    _splitOutput();
     _getNextInput();
 
     if (_feed.isEmpty()) {
@@ -131,16 +144,18 @@ public class FreecellSolver extends FreecellGame {
     }
 
     final int newSize = _pool.size();
-    if (oldSize < newSize) {
-      System.out.print('+');
-    } else if (oldSize > newSize) {
-      System.out.print('-');
-    } else {
-      System.out.print('=');
+    if (debug) {
+      if (oldSize < newSize) {
+        System.out.print('+');
+      } else if (oldSize > newSize) {
+        System.out.print('-');
+      } else {
+        System.out.print('=');
+      }
     }
 
     _iteration++;
-    if (_iteration % 100 == 0) {
+    if (debug && _iteration % 100 == 0) {
       System.out.println("\n" + (_iteration / 100)
         + " [" + (doneSize * 100 / TOTAL_MAX)
         + "% " + newSize + ']');
@@ -167,11 +182,14 @@ public class FreecellSolver extends FreecellGame {
               if (isSolved()) {
                 if (_solution == null || _solution.length > _path.size()) {
                   _solution = _path.toArray​();
-                  System.out.println();
-                  System.out.println("*********");
-                  System.out.println("Solution: " + _solution.length);
-                  System.out.println(pathToString(_solution));
-                  System.out.println("*********");
+
+                  if (debug) {
+                    System.out.println();
+                    System.out.println("*********");
+                    System.out.println("Solution: " + _solution.length);
+                    System.out.println(pathToString(_solution));
+                    System.out.println("*********");
+                  }
                 }
 
               } else {
@@ -211,8 +229,9 @@ public class FreecellSolver extends FreecellGame {
   }
 
   public static void main(String[] args) {
-    final int deal = 3;
+    final int deal = 8;
     var game = new FreecellSolver();
+    game.debug = true;
     game.deal(deal);
     System.out.println("DESK: " + game.toString());
     System.out.println("KEY: " + game.toKey());
@@ -223,8 +242,8 @@ public class FreecellSolver extends FreecellGame {
       System.out.println("" + deal
         + ',' + path.length
         + ',' + game.pathToString(path));
-      game.rewind();
-      game.forward(path);
+      // game.rewind();
+      // game.forward(path);
     } else {
       System.out.println("Unsolved ;-(");
     }
