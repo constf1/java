@@ -84,7 +84,7 @@ public final class IntStack {
    * Returns an array containing all of the elements in this stack.
    * @return an array
    */
-  public int[] toArray​() {
+  public int[] toArray() {
     return Arrays.copyOf(_data, _size);
   }
 

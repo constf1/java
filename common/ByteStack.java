@@ -96,7 +96,7 @@ public final class ByteStack implements Comparable<ByteStack> {
    * Returns an array containing all of the elements in this stack.
    * @return an array
    */
-  public byte[] toArray​() {
+  public byte[] toArray() {
     return Arrays.copyOf(_data, _size);
   }
 

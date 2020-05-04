@@ -78,7 +78,7 @@ public class FreecellSolver extends FreecellGame {
     moveCardsAuto();
 
     _done.put(toKey(), _path.size());
-    _feed.add(_path.toArray​());
+    _feed.add(_path.toArray());
   }
 
   protected void _splitOutput() {
@@ -177,11 +177,11 @@ public class FreecellSolver extends FreecellGame {
             String key = toKey();
             Integer value = _done.get(key);
             if (value == null || value.intValue() > _path.size()) {
-              final int[] next = _path.toArray​();
+              final int[] next = _path.toArray();
               moveCardsToBases();
               if (isSolved()) {
                 if (_solution == null || _solution.length > _path.size()) {
-                  _solution = _path.toArray​();
+                  _solution = _path.toArray();
 
                   if (debug) {
                     System.out.println();
