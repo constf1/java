@@ -13,7 +13,7 @@ import java.util.TreeSet;
 import common.Deck;
 import common.IntStack;
 
-public class FreecellSolver extends FreecellGame {
+public final class FreecellSolver extends FreecellGame {
   public static final int
     TOTAL_MAX = 5000000,
     INPUT_MIN = 1000,
@@ -26,7 +26,7 @@ public class FreecellSolver extends FreecellGame {
     setInputSize(8888);
   }
 
-  public void setInputSize(int value) {
+  public void setInputSize(final int value) {
     _inputSize = Math.min(Math.max(value, INPUT_MIN), INPUT_MAX);
   }
 
@@ -34,17 +34,17 @@ public class FreecellSolver extends FreecellGame {
     return _inputSize;
   }
 
-  protected List<int[]> _feed = new ArrayList<>();
-  protected Map<String, Integer> _done = new HashMap<>();
-  protected SortedMap<Integer, SortedSet<int[]>> _pool = new TreeMap<>();
-  protected int[] _solution = null;
-  protected int _iteration = 0;
-  protected IntStack _nextMoves = new IntStack();
-  protected int _inputSize = INPUT_MIN;
+  private List<int[]> _feed = new ArrayList<>();
+  private final Map<String, Integer> _done = new HashMap<>();
+  private final SortedMap<Integer, SortedSet<int[]>> _pool = new TreeMap<>();
+  private int[] _solution = null;
+  private int _iteration = 0;
+  private final IntStack _nextMoves = new IntStack();
+  private int _inputSize = INPUT_MIN;
 
-  protected Comparator<int[]> _comparator = new Comparator<>() {
+  private final Comparator<int[]> _comparator = new Comparator<>() {
     @Override
-    public int compare(int[] a, int[] b) {
+    public int compare(final int[] a, final int[] b) {
       if (a.length != b.length) {
         return a.length - b.length;
       }
@@ -58,15 +58,15 @@ public class FreecellSolver extends FreecellGame {
     }
   };
 
-  protected boolean _shouldSolve(int pathLength) {
+  private boolean _shouldSolve(final int pathLength) {
     if (_solution != null) {
-      int cards = Deck.CARD_NUM - countSolved();
+      final int cards = Deck.CARD_NUM - countSolved();
       return _solution.length > pathLength + cards;
     }
     return true;
   }
 
-  protected void _prepare() {
+  private void _prepare() {
     _feed.clear();
     _done.clear();
     _pool.clear();
@@ -81,7 +81,7 @@ public class FreecellSolver extends FreecellGame {
     _feed.add(_path.toArray());
   }
 
-  protected void _splitOutput() {
+  private void _splitOutput() {
     final int feedSize = _feed.size();
     if (feedSize > _inputSize) {
       for (final int[] path : _feed) {
@@ -91,9 +91,8 @@ public class FreecellSolver extends FreecellGame {
         final int solved = countSolved();
         final int cells = countEmptyCells();
         final int piles = countEmptyPiles();
-        final Integer KEY = Integer.valueOf(
-          (int) -Math.round(90.00 * solved + 3.00 * cells + 4.25 * piles - 2.75 * path.length)
-        );
+        final Integer KEY = Integer
+            .valueOf((int) -Math.round(90.00 * solved + 3.00 * cells + 4.25 * piles - 2.75 * path.length));
 
         if (_pool.containsKey(KEY)) {
           _pool.get(KEY).add(path);
@@ -107,12 +106,12 @@ public class FreecellSolver extends FreecellGame {
     }
   }
 
-  protected void _getNextInput() {
+  private void _getNextInput() {
     if (_feed.isEmpty() && !_pool.isEmpty()) {
       final Integer KEY = _pool.firstKey();
       final var set = _pool.get(KEY);
       final int size = set.first().length;
-      for (int[] path : set) {
+      for (final int[] path : set) {
         if (size != path.length) {
           break;
         } else {
@@ -128,7 +127,7 @@ public class FreecellSolver extends FreecellGame {
     }
   }
 
-  protected boolean _nextIteration() {
+  private boolean _nextIteration() {
     final int doneSize = _done.size();
     if (_solution != null && doneSize > TOTAL_MAX) {
       return false;
@@ -156,9 +155,7 @@ public class FreecellSolver extends FreecellGame {
 
     _iteration++;
     if (debug && _iteration % 100 == 0) {
-      System.out.println("\n" + (_iteration / 100)
-        + " [" + (doneSize * 100 / TOTAL_MAX)
-        + "% " + newSize + ']');
+      System.out.println("\n" + (_iteration / 100) + " [" + (doneSize * 100 / TOTAL_MAX) + "% " + newSize + ']');
     }
 
     final var input = _feed;
@@ -174,8 +171,8 @@ public class FreecellSolver extends FreecellGame {
           moveCard(_nextMoves.get(i));
           if (_shouldSolve(_path.size()) && hasNextMove()) {
             moveCardsAuto();
-            String key = toKey();
-            Integer value = _done.get(key);
+            final String key = toKey();
+            final Integer value = _done.get(key);
             if (value == null || value.intValue() > _path.size()) {
               final int[] next = _path.toArray();
               moveCardsToBases();
@@ -205,17 +202,17 @@ public class FreecellSolver extends FreecellGame {
     return _feed.size() > 0 || _pool.size() > 0;
   }
 
-  public static char toChar(int n) {
+  public static char toChar(final int n) {
     if (n >= 0 && n < 10) {
-      return (char)('0' + n);
+      return (char) ('0' + n);
     } else {
-      return (char)('a' + n - 10);
+      return (char) ('a' + n - 10);
     }
   }
 
-  public String pathToString(int[] path) {
-    var buf = new StringBuilder(path.length);
-    for (var move : path) {
+  public String pathToString(final int[] path) {
+    final var buf = new StringBuilder(path.length);
+    for (final var move : path) {
       buf.append(toChar(toGiver(move)));
       buf.append(toChar(toTaker(move)));
     }
@@ -224,19 +221,20 @@ public class FreecellSolver extends FreecellGame {
 
   public int[] solve() {
     _prepare();
-    while (_nextIteration());
+    while (_nextIteration())
+      ;
     return _solution;
   }
 
-  public static void main(String[] args) {
+  public static void main(final String[] args) {
     final int deal = 8;
-    var game = new FreecellSolver();
+    final var game = new FreecellSolver();
     game.debug = true;
     game.deal(deal);
     System.out.println("DESK: " + game.toString());
     System.out.println("KEY: " + game.toKey());
 
-    var path = game.solve();
+    final var path = game.solve();
     if (path != null) {
       System.out.println("Solved!");
       System.out.println("" + deal
